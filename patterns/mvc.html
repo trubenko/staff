@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<button id="calcUser">Compute</button>
+<div id="showResult"></div>
+
+
+<script>
+    (function(){
+        var view = {
+            showNumber:function(num){
+                var el = document.getElementById('showResult');
+                el.innerText = num;
+            }
+        };
+
+        var model = {
+            number: 0,
+            calculate:function(num){
+                this.number +=  num;
+                view.showNumber(this.number);
+            }
+        };
+
+        var controller = {
+            handleOnClick: function(){
+                model.calculate(23);
+            }
+        };
+
+
+        var app = {
+            init: function(){
+                this.main();
+                this.events();
+            },
+            main: function(){
+
+            },
+
+            events: function() {
+                var el = document.getElementById('calcUser');
+                el.onclick = controller.handleOnClick;
+            }
+        };
+        app.init();
+
+    })();
+</script>
+
+</body>
+</html>

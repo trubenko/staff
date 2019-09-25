@@ -1,0 +1,16 @@
+html
+    head
+        title= title
+        script(src="https://code.jquery.com/jquery-3.4.1.js")
+    body
+        h1= hello
+        select#lang
+            each val in loc
+                if val === lang
+                    option(value=val selected) #{val.toUpperCase()}
+                else
+                    option(value=val) #{val.toUpperCase()}
+    script
+        include ../js/main.js
+
+    div #{__("Hello")}

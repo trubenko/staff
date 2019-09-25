@@ -1,0 +1,7 @@
+{
+	"Hello World": "Hello World",
+	"Hello": "Привет",
+	"Hello %s": "Hello %s",
+	"Hello {{name}}": "Hello {{name}}",
+	"Condition": "Русский"
+}

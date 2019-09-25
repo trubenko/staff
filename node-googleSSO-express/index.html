@@ -1,0 +1,85 @@
+<!-- The top of file index.html -->
+<html itemscope itemtype="http://schema.org/Article">
+<head>
+    <!-- BEGIN Pre-requisites -->
+    <script
+            src="https://code.jquery.com/jquery-2.2.4.js"
+            integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="
+            crossorigin="anonymous"></script>
+
+    <script src="https://apis.google.com/js/client:platform.js?onload=start" async defer>
+    </script>
+    <!-- END Pre-requisites -->
+    <!-- Continuing the <head> section -->
+    <script>
+        function start() {
+            gapi.load('auth2', function () {
+                auth2 = gapi.auth2.init({
+                    client_id: '496851495488-qo687p09e9jn0dbkoo5r6c35oln7tg55.apps.googleusercontent.com',
+                    scope: 'email profile https://www.googleapis.com/auth/gmail.labels'
+                });
+            });
+        }
+    </script>
+</head>
+<body>
+<!-- Add where you want your sign-in button to render -->
+<!-- Use an image that follows the branding guidelines in a real app -->
+<button id="signinButton">Sign in with Google</button>
+<script>
+
+    function signInCallback(authResult) {
+        if (authResult['code']) {
+
+            // Hide the sign-in button now that the user is authorized, for example:
+            // $('#signinButton').attr('style', 'display: none');
+
+            // Send the code to the server
+            $.ajax({
+                type: 'POST',
+                url: 'google/auth',
+                // Always include an `X-Requested-With` header in every AJAX request,
+                // // to protect against CSRF attacks.
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                // contentType: 'application/octet-stream; charset=utf-8',
+                success: function (result) {
+                    console.log(result);
+
+                    $.get('https://www.googleapis.com/oauth2/v1/userinfo?alt=json', {access_token: result.access_token})
+                        .then(data => data)
+                        .then((data) => {
+                            return $.get(`https://www.googleapis.com/gmail/v1/users/${data.id}/labels`, {access_token: result.access_token});
+                        })
+                        .then(data => {
+                            console.log(data)
+                        });
+
+                    // $.ajax({
+                    //     type: "POST",
+                    //     url: 'https://www.googleapis.com/gmail/v1/users/userId/labels',
+                    //     data: data,
+                    //     success: function(data){
+                    //         console.log(data);
+                    //     },
+                    //     dataType: dataType
+                    // });
+                },
+                // processData: false,
+                data: {
+                    code: authResult['code']
+                }
+            });
+        } else {
+            // There was an error.
+        }
+    }
+
+    $('#signinButton').click(function () {
+        // signInCallback defined in step 6.
+        auth2.grantOfflineAccess().then(signInCallback);
+    });
+</script>
+</body>
+</html>
